@@ -10,6 +10,8 @@ rojo='\e[31m'
 
 NC='\e[0m'
 
+amarillo='\e[33'
+
 #Comprobar si se ejecuta como usuario
 
 if [[ "$EUID" -eq 0 ]]; then

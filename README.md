@@ -10,31 +10,18 @@
 >>
 > Con este trabajo conseguimos más conocimientos de implantacion de servicios y el entorno en el que se hace y como rinde los servicios en él.
 >
->
->![LOGO TFG](./IMG/Logo-TFG.png "LOGO TFG")
->
 > Utilizaremos los [scripts](./SCRIPTS/) *(EJECUTAR LOS SCRIPTS EN OTRA CARPETA)* para automatizar la instalacion del cluster y los servicios.
 >
 > `bash script.sh` o `./script.sh`
->
-> Para hacer el trabajo me he apoyado en varios tutoriales e informacion acerca del cluster y servicios que se levantan dentro de kubernetes
->>* [Monitorizacion Prometheus,Grafana, Loki](https://medium.com/@ismaelaguilera_/monitorear-cluster-de-kubernetes-con-prometheus-loki-y-grafana-d6ffb620d265)
->>
->>* [Monitorizar PostgreSQL](https://medium.com/@ozg/monitoring-postgresql-databases-in-kubernetes-using-prometheus-and-grafana-33ed45b213fb)
->>
->>* [Curso Kubernetes](https://pabpereza.dev/docs/cursos/kubernetes)
->>
->>* [Documentación Kubernetes](https://kubernetes.io/es/docs/concepts/services-networking/service/)
->>
 >
 
 ---
 
 ## ⚙️ Tecnologías utilizadas
 
-- 💻 Ubuntu Server / Lubuntu 24.04
-
 - 🖥️ VMware Workstation
+
+- 💻 Lubuntu / Ubuntu Server 24.04
 
 - 🔧 Bash scripts
 
@@ -50,6 +37,8 @@
 
 - 🧰 Adminer
 
+![LOGO TFG](./IMG/Logo-TFG.png "LOGO TFG")
+
 ## 🖥️ Acceder a los servicios
 
 ##### `kubectl get svc <NAMESPACE>`
@@ -61,6 +50,8 @@
 | Adminer      | `http://<IP_NODE>:PUERTO`     |
 
 ## 📚 Fuentes / Referencias
+
+Para hacer el trabajo me he apoyado en varios tutoriales e informacion acerca del cluster y servicios que se levantan dentro de kubernetes
 
 - [Monitorización con Prometheus, Grafana y Loki](https://medium.com/@ismaelaguilera_/monitorear-cluster-de-kubernetes-con-prometheus-loki-y-grafana-d6ffb620d265)
 

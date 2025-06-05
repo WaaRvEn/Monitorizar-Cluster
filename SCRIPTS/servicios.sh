@@ -4,9 +4,13 @@ negrita='\e[1m'
 
 verde='\e[32m'
 
+rojo='\e[31m'
+
 NC='\e[0m'
 
 azul='\e[34m'
+
+amarillo='\e[33'
 
 echo -e "${azul}------------------------------------CREAR LOCAL-PATH------------------------------------${NC}"
 
@@ -23,7 +27,7 @@ helm repo update
 
 helm install my-postgresql bitnami/postgresql --namespace monitoreo
 
-echo -e "${negrita} Esperando a que PostgreSQL esté listo...${NC}"
+echo -e "${azul} Esperando a que PostgreSQL esté listo...${NC}"
 until kubectl get pods -n monitoreo | grep my-postgresql | grep -q 'Running'; do
   sleep 5
 done
@@ -44,14 +48,6 @@ read -p "nombre de usuario: " usuario
 read -s -p "contraseña usuario: " pswd_usu_pg
 
 echo
-
-# Mostrar resumen de lo que se va a ejecutar
-echo -e "\n\e[1m=== COMANDOS QUE SE EJECUTARÁN EN POSTGRESQL ===\e[0m"
-echo -e "CREATE DATABASE ${db_name};"
-echo -e "CREATE USER ${usuario} WITH PASSWORD '[oculto]';"
-echo -e "GRANT ALL PRIVILEGES ON DATABASE ${db_name} TO ${usuario};"
-echo -e "GRANT ALL ON SCHEMA public TO ${usuario};"
-echo -e "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ${usuario};"
 
 kubectl exec my-postgresql-0 -n monitoreo -- bash -c "PGPASSWORD='${pswd_pg}' psql -U postgres -c \"
 CREATE DATABASE ${db_name};\""
@@ -208,6 +204,8 @@ done
 
 echo -e "${verde} Prometheus-DB está listo.${NC}"
 
+echo -e "${azul}----------------------------------INSTALAR PROMETHEUS CLUSTER---------------------------------------------${NC}"
+
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 helm install prometheus prometheus-community/prometheus -n prometheus --create-namespace
@@ -244,7 +242,7 @@ EOF
 
 helm install loki-stack grafana/loki-stack --values values.yaml -n monitoreo
 
-echo -e "${negrita} Esperando a que Grafana esté listo...${NC}"
+echo -e "${azul} Esperando a que Grafana esté listo...${NC}"
 until kubectl get pods -n monitoreo | grep grafana | grep -q 'Running'; do
   sleep 5
 done
@@ -292,10 +290,26 @@ EOF
 
 kubectl apply -f adminer.yaml
 
+# Mostrar resumen de lo que se va a ejecutar
+echo -e "${amarillo}=== COMANDOS QUE SE EJECUTARON EN POSTGRESQL ===${NC}"
+echo -e "CREATE DATABASE ${db_name};"
+echo -e "CREATE USER ${usuario} WITH PASSWORD '[oculto]';"
+echo -e "GRANT ALL PRIVILEGES ON DATABASE ${db_name} TO ${usuario};"
+echo -e "GRANT ALL ON SCHEMA public TO ${usuario};"
+echo -e "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ${usuario};"
+
 export GRAFANA_PASSWORD=`kubectl -n monitoreo get secret loki-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d`
 
 echo -e """contraseña grafana = $GRAFANA_PASSWORD
 
-contraseña postgre = $pswd_pg""" > otros
+contraseña postgre = $pswd_pg
 
-echo -e "${negrita} revisar archivo --> otros"
+Dashboards Grafana:
+
+Prometheus: 18283 - 1860
+
+Loki: 16966
+
+PostgreSQL: 455 - 9628 - 12485""" > otros
+
+echo -e "${amarillo} revisar archivo --> otros${NC}"

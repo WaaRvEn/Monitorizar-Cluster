@@ -6,9 +6,13 @@ negrita='\e[1m'
 
 verde='\e[32m'
 
+rojo='\e[31m'
+
 azul='\e[34m'
 
 NC='\e[0m'
+
+amarillo='\e[33'
 
 # Comprobar si se ejecuta como root
 
@@ -64,9 +68,10 @@ apt-mark hold kubelet kubeadm kubectl
 
 echo -e "${azul}--------------------------------AÑADIR HOST MAESTRO-------------------------------${NC}"
 read -p "¿Que ip tiene el nodo maestro? " ip_maestro
-echo "$ip_maestro k8scp" >> /etc/hosts
+read -p "¿nombre para identificarlo? " nombre_kube
+echo "$ip_maestro $nombre_kube" >> /etc/hosts
 
-read -p "¿QUÉ NODO SERÁS, master O worker? " nodo
+read -p "¿QUÉ NODO ERES, master O worker? " nodo
 
 #NODO MASTER
 
@@ -74,11 +79,13 @@ if [[ $nodo == "master" ]]
 then
 
 	echo -e "${azul}------------------------------INICIAR EL CLUSTER CON KUBEADM----------------------------------${NC}"
-	read -p "¿rango ip? ej:192.168.0.0/16" ip
+	read -p "¿rango IPs para pods? (ej:192.168.0.0/16) " ip
 	kubeadm init --pod-network-cidr=$ip --control-plane-endpoint=k8scp:6443
 
 fi
+
 #NODO WORKER
+
 if [[ $nodo == "worker" ]]
 then
 
@@ -91,4 +98,7 @@ then
 	read -p "hash del cluster: " hash
 	
 	kubeadm join k8scp:6443 --token $token --discovery-token-ca-cert-hash sha256:$hash
+
 fi
+
+else

@@ -47,6 +47,14 @@ read -p "nombre de usuario: " usuario
 
 read -s -p "contraseña usuario: " pswd_usu_pg
 
+read -p "nombre usuario1: " usuario1
+
+read -s -p "contraseña usuario1: " pswd_usu1_pg
+
+read -p "nombre usuario2: " usuario2
+
+read -s -p "contraseña usuario2: " pswd_usu2_pg
+
 echo
 
 kubectl exec my-postgresql-0 -n monitoreo -- bash -c "PGPASSWORD='${pswd_pg}' psql -U postgres -c \"
@@ -299,6 +307,47 @@ echo -e "GRANT ALL ON SCHEMA public TO ${usuario};"
 echo -e "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ${usuario};"
 
 export GRAFANA_PASSWORD=`kubectl -n monitoreo get secret loki-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d`
+
+echo -e """-- Crear base de datos (si se hace con postgres, se hace desde fuera con CREATE DATABASE ...)
+
+-- Conectarse a la base de datos (este comando lo usará el script en psql -d)
+-- \c ${db_name}];
+
+-- Crear tablas
+CREATE TABLE producto (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100),
+  precio NUMERIC
+);
+
+CREATE TABLE clientes (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100),
+  email VARCHAR(100)
+);
+
+CREATE TABLE compra (
+  id SERIAL PRIMARY KEY,
+  cliente_id INT REFERENCES clientes(id),
+  fecha DATE
+);
+
+CREATE TABLE compra_detalles (
+  id SERIAL PRIMARY KEY,
+  compra_id INT REFERENCES compra(id),
+  producto_id INT REFERENCES producto(id),
+  cantidad INT
+);
+
+-- Crear usuarios
+CREATE USER ${usuario1} WITH PASSWORD 'pswd_usu1_pg';
+CREATE USER ${usuario2} WITH PASSWORD 'pswd_usu2_pg';
+
+-- Dar permisos WRITE a usu1
+GRANT INSERT, UPDATE ON producto, clientes, compra, compra_detalles TO ${usuario1};
+
+-- Dar permisos READ a usu2
+GRANT SELECT ON producto, clientes, compra, compra_detalles TO ${usuario2};""" > tablas.sql
 
 echo -e """contraseña grafana = $GRAFANA_PASSWORD
 

@@ -320,11 +320,8 @@ read -s -p "contraseña usuario2: " pswd_usu2_pg
 
 echo
 
-cat > tablas.sql << 'EOF'
+cat > tablas.sql <<EOF
 -- Crear base de datos (si se hace con postgres, se hace desde fuera con CREATE DATABASE ...)
-
--- Conectarse a la base de datos (este comando lo usará el script en psql -d)
--- \c ${db_name}];
 
 -- Crear tablas
 CREATE TABLE producto (

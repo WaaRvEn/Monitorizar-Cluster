@@ -314,7 +314,8 @@ echo -e "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ${usuario};"
 
 export GRAFANA_PASSWORD=`kubectl -n monitoreo get secret loki-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d`
 
-echo -e """-- Crear base de datos (si se hace con postgres, se hace desde fuera con CREATE DATABASE ...)
+cat > tablas.sql << 'EOF'
+-- Crear base de datos (si se hace con postgres, se hace desde fuera con CREATE DATABASE ...)
 
 -- Conectarse a la base de datos (este comando lo usará el script en psql -d)
 -- \c ${db_name}];
@@ -353,7 +354,8 @@ CREATE USER ${usuario2} WITH PASSWORD 'pswd_usu2_pg';
 GRANT INSERT, UPDATE ON producto, clientes, compra, compra_detalles TO ${usuario1};
 
 -- Dar permisos READ a usu2
-GRANT SELECT ON producto, clientes, compra, compra_detalles TO ${usuario2};""" > tablas.sql
+GRANT SELECT ON producto, clientes, compra, compra_detalles TO ${usuario2};
+EOF
 
 echo -e """contraseña grafana = $GRAFANA_PASSWORD
 

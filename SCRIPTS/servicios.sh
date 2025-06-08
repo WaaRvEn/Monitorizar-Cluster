@@ -110,6 +110,7 @@ spec:
     - protocol: TCP
       port: 9187
       targetPort: 9187
+  type: NodePort
 EOF
 
 echo -e "${azul}-------------------------INSTALAR PROMETHEUS Y CONFIGURACION DE MONITORIZACIÓN DB---------------------------${NC}"
@@ -235,12 +236,17 @@ loki:
   persistence:
     enabled: true
     size: 1Gi
+    storageClassName: local-path
 
 promtail:
   enabled: true
 
 grafana:
   enabled: true
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClassName: local-path
   sidecar:
     datasources:
       enabled: true

@@ -47,9 +47,13 @@ read -p "nombre de usuario: " usuario
 
 read -s -p "contraseña usuario: " pswd_usu_pg
 
+echo
+
 read -p "nombre usuario1: " usuario1
 
 read -s -p "contraseña usuario1: " pswd_usu1_pg
+
+echo
 
 read -p "nombre usuario2: " usuario2
 

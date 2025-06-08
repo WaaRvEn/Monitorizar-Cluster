@@ -49,18 +49,6 @@ read -s -p "contraseña usuario: " pswd_usu_pg
 
 echo
 
-read -p "nombre usuario1: " usuario1
-
-read -s -p "contraseña usuario1: " pswd_usu1_pg
-
-echo
-
-read -p "nombre usuario2: " usuario2
-
-read -s -p "contraseña usuario2: " pswd_usu2_pg
-
-echo
-
 kubectl exec my-postgresql-0 -n monitoreo -- bash -c "PGPASSWORD='${pswd_pg}' psql -U postgres -c \"
 CREATE DATABASE ${db_name};\""
 
@@ -318,6 +306,20 @@ echo -e "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ${usuario};"
 
 export GRAFANA_PASSWORD=`kubectl -n monitoreo get secret loki-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d`
 
+echo -e "${azul} Usuarios para la base de datos${NC}"
+
+read -p "nombre usuario1: " usuario1
+
+read -s -p "contraseña usuario1: " pswd_usu1_pg
+
+echo
+
+read -p "nombre usuario2: " usuario2
+
+read -s -p "contraseña usuario2: " pswd_usu2_pg
+
+echo
+
 cat > tablas.sql << 'EOF'
 -- Crear base de datos (si se hace con postgres, se hace desde fuera con CREATE DATABASE ...)
 
@@ -351,8 +353,8 @@ CREATE TABLE compra_detalles (
 );
 
 -- Crear usuarios
-CREATE USER ${usuario1} WITH PASSWORD 'pswd_usu1_pg';
-CREATE USER ${usuario2} WITH PASSWORD 'pswd_usu2_pg';
+CREATE USER ${usuario1} WITH PASSWORD '${pswd_usu1_pg}';
+CREATE USER ${usuario2} WITH PASSWORD '${pswd_usu2_pg}';
 
 -- Dar permisos WRITE a usu1
 GRANT INSERT, UPDATE ON producto, clientes, compra, compra_detalles TO ${usuario1};

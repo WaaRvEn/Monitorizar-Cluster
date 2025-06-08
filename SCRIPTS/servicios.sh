@@ -367,6 +367,6 @@ Prometheus: 18283 - 1860
 
 Loki: 16966
 
-PostgreSQL: 455 - 9628 - 12485""" > otros
+PostgreSQL: 455 - 9628""" > otros
 
 echo -e "${amarillo} revisar archivo --> otros${NC}"
